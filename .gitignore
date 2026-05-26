@@ -1,0 +1,27 @@
+# Local env / secrets
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+*.egg-info/
+
+# Project outputs (each skill writes to ./projects/ when run)
+projects/
+output/
+*.tmp
+.tmp/
+
+# macOS
+.DS_Store
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
