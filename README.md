@@ -38,24 +38,36 @@ Scripts are kept small, single-purpose, and provider-grounded. No giant config s
 
 ## Quickstart
 
-```bash
-git clone https://github.com/gooseworks-ai/goose-video.git
-cd goose-video/skills/templates/animated-explainer-ad
-pip install -r requirements.txt
-cp .env.example .env
-# fill in FAL_KEY + ELEVENLABS_API_KEY
+Paste this into Claude Code (or any agent that can run shell + read files):
 
-# then in your agent, with the skill loaded:
-> Make an animated explainer ad for [your brand] where the villain is [your problem]…
+```
+Clone https://github.com/gooseworks-ai/goose-video into ./goose-video, then
+read the skill at ./goose-video/skills/templates/animated-explainer-ad/SKILL.md
+and walk me through it to make an animated explainer ad.
+
+Before starting:
+  1. cd into ./goose-video/skills/templates/animated-explainer-ad
+  2. pip install -r requirements.txt
+  3. Help me create a .env from .env.example — I'll need a FAL_KEY (https://fal.ai)
+     and ELEVENLABS_API_KEY (https://elevenlabs.io).
+
+Then ask me for: the brand, the product, the problem we're personifying as the
+villain, the ownable mechanism, and the audience. From there, follow the SKILL.md
+8-phase pipeline (intake → anchors → VO → keyframes → clips → end card → music →
+compose) and pause at each human review gate so I can approve before paying for
+the next phase.
 ```
 
-See each skill's own README for full setup + an example prompt.
+See each skill's own README for full setup details and additional example prompts.
 
 ## Built by
 
-[GooseWorks](https://gooseworks.ai) — AI coworkers for go-to-market. We use these skills internally for client work; publishing them so others can build on the same patterns.
+[**GooseWorks**](https://gooseworks.ai) — AI agents that make videos and run ads. We use these skills internally for client work; publishing them so others can build on the same patterns.
 
-[@shivsakhuja](https://x.com/shivsakhuja) · [LinkedIn](https://www.linkedin.com/in/shivsakhuja)
+- **Shiv Sakhuja** — [@shivsakhuja](https://x.com/shivsakhuja) · [LinkedIn](https://www.linkedin.com/in/shivsakhuja)
+- **Himanshu Bamoria** — [@0xhbam](https://x.com/0xhbam) · [LinkedIn](https://linkedin.com/in/hbamoria)
+- **Akhil Bisht** — [LinkedIn](https://www.linkedin.com/in/akhil-bisht/)
+- **Soham Mehta** — [@sohamehta_](https://x.com/sohamehta_) · [LinkedIn](https://www.linkedin.com/in/sohamehta/)
 
 ## License
 
