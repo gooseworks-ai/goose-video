@@ -9,6 +9,7 @@ Drop a skill folder into any agent that reads `SKILL.md` (Claude Code, Cursor, G
 | Skill | What it makes | Validated on |
 |---|---|---|
 | [`animated-explainer-ad`](./skills/templates/animated-explainer-ad/) | 9:16 ~30–45s absurdist Pixar 3D explainer ad where a personified villain narrates their own defeat by the product. Bright cartoon characters, single-narrator VO, real-product end card, burned captions, whimsical Pixar/Disney score. ~$15–25 per cut. | HUM Nutrition "Big Chill" · Soteri Skin "Eczema, the pH villain" |
+| [`create-cinematic-music-video`](./skills/templates/create-cinematic-music-video/) | 9:16 ~20–30s cinematic music-video ad built on an original anthem with real sung vocals + word-level timestamps. 14 beat-locked tableaux in a 3-act arc, swappable "look packs" (warm 35mm, neon night, paper-cut, gothic), PIL-typeset end card, burned word-synced captions. ~$15–25 per cut. | Apparel anthem (Kodak Portra) · Apparel anthem (CineStill night) · CPG anthem (paper-cut) |
 
 More coming. If you ship something using one of these, would love to see it.
 
