@@ -1,0 +1,81 @@
+{
+  "brand": "aurelia",
+  "run_slug": "run-01-comeback",
+  "title": "Comeback",
+  "campaign": "every morning is a comeback",
+  "duration_s": 28,
+  "look_pack": "KODAK_PORTRA_DAY",
+  "vocal_gender": "female",
+  "palette_anchors": ["honey gold", "cardinal red", "cream", "sepia warm"],
+
+  "music": {
+    "bpm": 120,
+    "vibe": "indie-pop anthem with cinematic strings and a confident-warm female lead vocal, big stadium drum at the chorus",
+    "structure_note": "Piano verse, drums build at the pre-chorus, full cinematic band at the chorus with the hook on the one, stripped acoustic outro."
+  },
+
+  "lyrics_locked_md": "source/lyrics-locked.md",
+  "accent_words": ["comeback", "morning", "Aurelia", "run", "again", "rise"],
+
+  "caption_overrides": {
+    "placement": "low",
+    "chunk_size": 4,
+    "font": "Georgia",
+    "font_size": 64
+  },
+
+  "endcard": {
+    "wordmark": "AURELIA",
+    "tagline": "every morning is a comeback",
+    "url": "aurelia.run",
+    "accent_hex": "#C99A4E",
+    "text_hex": "#F5EDE0",
+    "bg_hex": "#1A1612",
+    "font_family": "serif"
+  },
+
+  "tableaux": [
+    { "id": "T01", "role": "INTRO", "lyric_anchor": "(intro)",
+      "prompt": "Hero subject: a folded cardinal-red running jersey on a wooden bedroom chair at dawn. Soft side-light through a window, dust motes drifting. Composition: low angle on the chair, intimate and anticipatory. The jersey is the hero.",
+      "motion_hint": "Dust motes drift through the light beam. The jersey stays still as hero. 5 seconds." },
+    { "id": "T02", "role": "PERSONAL_BEAT_1", "lyric_anchor": "Set the alarm before the sun",
+      "prompt": "A runner in her thirties laces a shoe on a porch step in the early morning, breath faintly visible, calm and resolved. Warm low sun rakes across the boards.",
+      "motion_hint": "Her hands finish the lace, she exhales. 5 seconds." },
+    { "id": "T03", "role": "PERSONAL_BEAT_2", "lyric_anchor": "Tie the laces, here we go",
+      "prompt": "Slow tracking shot of a runner moving down a quiet tree-lined street, golden light catching her hair, the cardinal jersey visible.",
+      "motion_hint": "Slow forward tracking dolly. Hair moves naturally. 5 seconds." },
+    { "id": "T04", "role": "WIDE_ENSEMBLE", "lyric_anchor": "Out the door while the street is still",
+      "prompt": "Wide cinematic shot — four runners crest a hill toward camera in the golden hour, a soft lens flare drifting diagonally across the frame.",
+      "motion_hint": "Slow forward run by all four. Lens flare drifts. 5 seconds." },
+    { "id": "T05", "role": "KINETIC_CLOSE_1", "lyric_anchor": "Feel it building in my chest",
+      "prompt": "Tight close-up of running feet striking wet pavement, droplets kicking up, motion blur at the edges.",
+      "motion_hint": "Feet strike in rhythm, handheld micro-wobble. 5 seconds." },
+    { "id": "T06", "role": "KINETIC_CLOSE_2", "lyric_anchor": "Every step a little more",
+      "prompt": "Close-up of a runner's face mid-effort, jaw set, a single bead of sweat, eyes forward. Honey-gold rim light.",
+      "motion_hint": "A single hard breath, eyes lift. 5 seconds." },
+    { "id": "T07", "role": "SUSPENDED_TIME", "lyric_anchor": "Now the light is breaking through",
+      "prompt": "Slow-motion abstract beat — a spray of water droplets suspended mid-air in honey-gold light, a blurred runner behind. Frozen-time quality.",
+      "motion_hint": "Droplets drift downward in slow motion. Frozen-time. 5 seconds." },
+    { "id": "T08", "role": "HOOK_HERO", "lyric_anchor": "This is my comeback, every morning",
+      "prompt": "4-quadrant split: four runners at four different times of one morning — porch, street, hill, track — each a cinematic mini-shot in cardinal and cream. THIS IS THE HERO FRAME.",
+      "motion_hint": "Each quadrant pulses in alternation to the beat. 5 seconds." },
+    { "id": "T09", "role": "KINETIC_PEAK", "lyric_anchor": "Rise again, I run again",
+      "prompt": "A runner crosses a crest into full sunrise, arms loosening, slow-motion, the brightest energy moment.",
+      "motion_hint": "Slow motion. Arms open. Sun blazes behind. 5 seconds." },
+    { "id": "T10", "role": "PRODUCT_HERO", "lyric_anchor": "Aurelia, carry me onward",
+      "prompt": "PRODUCT HERO — the cardinal-red jersey hanging in single-source warm light against a dark wood wall, label catching the light.",
+      "motion_hint": "Slow-motion. The jersey sways imperceptibly. 5 seconds." },
+    { "id": "T11", "role": "MICRO_MONTAGE", "lyric_anchor": "Comeback, comeback, here I rise",
+      "prompt": "Contact-sheet 4-panel: shoelace pull, watch tap, gate latch, first stride — beat-locked to the lyric repetition.",
+      "motion_hint": "Each panel has its own subtle motion in alternation to the beat. 5 seconds." },
+    { "id": "T12", "role": "ORIGIN_WINK", "lyric_anchor": "Long road home, I earned it slow",
+      "prompt": "A worn paper race bib pinned to a corkboard among older bibs — the runner's history, heavier film grain.",
+      "motion_hint": "A draft lifts the corner of the bib. Heavier grain. 5 seconds." },
+    { "id": "T13", "role": "TWILIGHT_OUTRO", "lyric_anchor": "Every morning is a comeback",
+      "prompt": "Twilight beat — a lone runner walking it out down a long road, low warm sky behind, reflective and earned.",
+      "motion_hint": "Slow tracking-out. She walks away. Light shifts gently. 5 seconds." },
+    { "id": "T14", "role": "END_CARD", "lyric_anchor": "Comeback, comeback",
+      "prompt": "A clean, warm, empty backdrop — a softly lit cream wall with a single shaft of dawn light. NO text, NO words, NO signage anywhere in frame (the wordmark is composited in post).",
+      "motion_hint": "Static hold. The light shifts imperceptibly. 5 seconds." }
+  ]
+}
