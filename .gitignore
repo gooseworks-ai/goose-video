@@ -25,9 +25,3 @@ output/
 .vscode/
 .idea/
 *.swp
-
-# Node (CLI)
-node_modules/
-coverage/
-.turbo/
-package-lock.json
