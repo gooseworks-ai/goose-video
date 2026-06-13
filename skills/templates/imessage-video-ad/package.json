@@ -1,0 +1,13 @@
+{
+  "name": "imessage-video-ad",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Render an animated iMessage conversation reveal ad to video (Playwright + ffmpeg).",
+  "scripts": {
+    "record": "node scripts/record-master.js",
+    "end-card": "node scripts/render-end-card.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}

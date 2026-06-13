@@ -9,6 +9,7 @@ Drop a skill folder into any agent that reads `SKILL.md` (Claude Code, Cursor, G
 | Skill | What it makes | Validated on |
 |---|---|---|
 | [`animated-explainer-ad`](./skills/templates/animated-explainer-ad/) | 9:16 ~30–45s absurdist Pixar 3D explainer ad where a personified villain narrates their own defeat by the product. Bright cartoon characters, single-narrator VO, real-product end card, burned captions, whimsical Pixar/Disney score. ~$15–25 per cut. | HUM Nutrition "Big Chill" · Soteri Skin "Eczema, the pH villain" |
+| [`imessage-video-ad`](./skills/templates/imessage-video-ad/) | 9:16 ~17–22s iMessage conversation reveal ad — bubbles pop in over time, composer types char-by-char, real Apple iMessage SFX on every send/receive, lofi bed, framed iPhone on a flat-lay desk, brand end card with a promo code. One continuous Playwright recording. ~$0.20–0.65 per cut. | GooseWorks internal builds (product-flex + result-flex) |
 
 More coming. If you ship something using one of these, would love to see it.
 
