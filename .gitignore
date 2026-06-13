@@ -25,3 +25,10 @@ output/
 .vscode/
 .idea/
 *.swp
+
+# Node deps (skills that use Playwright)
+node_modules/
+
+# Local test runs / scratch
+_testrun/
+_scratch/
