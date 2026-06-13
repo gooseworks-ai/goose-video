@@ -1,0 +1,5 @@
+# No external API dependencies for concept generation.
+# All generation is handled by the LLM.
+
+# If you extend this skill to pull competitor ad data or brand research
+# from external sources, add those dependencies here.

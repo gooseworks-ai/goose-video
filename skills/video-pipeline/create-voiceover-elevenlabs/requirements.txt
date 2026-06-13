@@ -1,0 +1,12 @@
+# For running the Whisper timestamp verification workflow (optional but recommended)
+# Install one of:
+#   whisperx>=3.1.0            # faster, word-level timestamps
+#   openai-whisper>=20231117   # official Whisper (slower)
+
+# For the Python-based API call alternative to curl
+requests>=2.31.0
+
+# ffmpeg and ffprobe must be installed system-wide (not via pip):
+# macOS: brew install ffmpeg
+# Ubuntu/Debian: apt-get install ffmpeg
+# jq for JSON parsing: brew install jq

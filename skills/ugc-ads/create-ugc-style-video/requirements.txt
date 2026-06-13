@@ -1,0 +1,16 @@
+# create-ugc-style-video — Python dependencies
+# These are used by optional helper scripts for SRT generation,
+# audio level checking, and ffmpeg command building.
+# Core pipeline steps run via curl + ffmpeg (no Python required).
+
+# HTTP requests (for FAL and ElevenLabs API calls from Python scripts)
+requests>=2.31.0
+
+# JSON / SRT parsing helpers
+srt>=3.5.3
+
+# Audio analysis (optional — for QC level checking without ffmpeg)
+# pydub>=0.25.1
+
+# Environment variable loading
+python-dotenv>=1.0.0
