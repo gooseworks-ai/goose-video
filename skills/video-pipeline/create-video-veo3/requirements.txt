@@ -1,0 +1,5 @@
+# Required for FAL API fallback path only
+fal-client>=0.4.0
+
+# Required for downloading clips via Python (optional — curl works too)
+requests>=2.31.0

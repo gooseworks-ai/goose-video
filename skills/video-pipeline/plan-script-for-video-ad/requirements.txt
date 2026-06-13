@@ -1,0 +1,5 @@
+# No external Python dependencies for script planning.
+# All generation is handled by the LLM.
+#
+# If you add a local read-aloud timer or word-count checker script,
+# add dependencies here.
