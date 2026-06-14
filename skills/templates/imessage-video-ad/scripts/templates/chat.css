@@ -332,13 +332,13 @@ body.fill-viewport .stage {
 }
 .keyboard .input {
   flex: 1;
-  height: 36px;
+  min-height: 36px;            /* grows to fit a multi-line message as it types */
   border-radius: 18px;
   background: var(--keyboard-input-bg);
   border: 1px solid #D1D1D6;
   display: flex;
   align-items: center;
-  padding: 0 14px;
+  padding: 6px 14px;
   position: relative;
 }
 .keyboard .input .placeholder {
@@ -475,6 +475,23 @@ body.framed.theme-dark .status-bar { color: #fff; }
 .framed .group-header {
   border-bottom: 1px solid #E5E5EA;
 }
+
+/* Framed screen is only ~393px wide. The base attachment-card (max-width 520px,
+   img max-height 760px) overflows it and dominates the phone, pushing later
+   bubbles out of frame. Constrain image attachments to a real iMessage-sized
+   card so the conversation stays readable as it grows. */
+body.framed .attachment-card { max-width: 74%; }
+body.framed .attachment-card img { max-height: 300px; }
+
+/* Framed conversation is a bounded scroll container (the phone screen has a
+   fixed height). overflow-y:auto lets the recorder's smoothScroll keep the
+   latest bubble in view; the scrollbar is hidden so it reads as a real phone. */
+body.framed .conversation {
+  flex: 1;
+  min-height: 0;            /* allow the flex child to shrink + scroll */
+  overflow-y: auto;
+}
+body.framed .conversation::-webkit-scrollbar { width: 0; height: 0; display: none; }
 
 /* Minimal mode tweaks */
 .minimal .stage {
@@ -651,6 +668,59 @@ body.theme-dark .keyboard .input {
 }
 .attachment-meta .title { font-size: 22px; }
 .attachment-meta .subtitle { font-size: 28px; }
+
+/* ---------------------------------------------------------------------------
+   Rich link preview — the real iMessage shared-URL card (image + caption band
+   with bold title, grey domain, and a chevron, all in one rounded bubble).
+   --------------------------------------------------------------------------- */
+.row.link {
+  display: flex;
+  flex-direction: column;
+  margin-top: 6px;
+}
+.row.link.sent { align-items: flex-end; }
+.row.link.received { align-items: flex-start; }
+.link-preview {
+  width: 72%;
+  max-width: 320px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--imsg-grey);
+}
+.link-image { width: 100%; line-height: 0; }
+.link-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 230px;
+  object-fit: cover;
+}
+.link-caption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px 10px;
+}
+.link-text { flex: 1; min-width: 0; }
+.link-title {
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.25;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.link-domain {
+  font-size: 13px;
+  color: #8E8E93;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.link-chevron { flex: none; opacity: 0.5; }
 .attachment-meta {
   text-align: center;
   margin-top: 4px;
@@ -674,7 +744,9 @@ body.theme-dark .keyboard .input {
   color: var(--text-primary);
   font-size: 17px;
   letter-spacing: -0.2px;
-  white-space: pre;
+  white-space: pre-wrap;        /* wrap long messages to multiple lines */
+  word-break: break-word;
+  line-height: 1.35;
 }
 .keyboard .input .caret {
   display: inline-block;
@@ -753,10 +825,7 @@ body.theme-dark .keyboard .input {
 }
 
 /* For long composer text, allow it to truncate gracefully. */
-.keyboard .input { overflow: hidden; }
 .keyboard .input .composer-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: calc(100% - 36px);
+  max-width: calc(100% - 40px);   /* leave room for the send button; wraps instead of clipping */
 }
 

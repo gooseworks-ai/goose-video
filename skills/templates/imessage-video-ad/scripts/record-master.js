@@ -27,6 +27,7 @@ const { execSync } = require('child_process');
 const { chromium } = require('playwright');
 // generate.js is bundled in this scripts/ folder (it resolves ./templates/ on its own).
 const { renderHTML } = require('./generate.js');
+const ICONS = require('./templates/icons.js');   // send/mic SVGs for the composer typing animation
 
 function parseArgs(argv) {
   const a = { framed: true, zoom: 2.10 };
@@ -67,10 +68,10 @@ function dataURI(p) {
   return `data:${mime};base64,${buf.toString('base64')}`;
 }
 
-// Inline image attachments as data: URIs.
+// Inline image attachments (and link-preview images) as data: URIs.
 function inlineAttachments(thread, baseDir) {
   for (const m of thread.messages || []) {
-    if (m.type === 'attachment' && m.src && !m.src.startsWith('data:')) {
+    if ((m.type === 'attachment' || m.type === 'link') && m.src && !m.src.startsWith('data:')) {
       const abs = path.resolve(baseDir, m.src);
       const buf = fs.readFileSync(abs);
       const ext = path.extname(abs).slice(1).toLowerCase();
@@ -119,7 +120,7 @@ function buildFullThread() {
   inlineAttachments(thread, path.dirname(fullPath));
   // Mark every message pop-pending. The driver unhides them on schedule.
   for (const m of thread.messages) {
-    if (m.type === 'text' || m.type === 'typing' || m.type === 'attachment') {
+    if (m.type === 'text' || m.type === 'typing' || m.type === 'attachment' || m.type === 'link') {
       m.popState = 'pending';
     }
   }
@@ -127,12 +128,54 @@ function buildFullThread() {
   return thread;
 }
 
-function makeDriverScript() {
+// Auto-compose: every SENT text message is typed out in the composer (in full)
+// before it pops, mirroring how iMessage actually works. You don't hand-author
+// composer events — they're derived from the messages, so the text box always
+// types the complete message (no truncated previews) for every sent bubble.
+function isSentMsg(m, thread) {
+  const p = (thread.participants || []).find(x => x.id === m.from);
+  return !!(p && p.self);
+}
+
+function autoComposeTimeline(events, thread) {
+  const msgById = {};
+  for (const m of (thread.messages || [])) if (m.id) msgById[m.id] = m;
+  // Drop any pre-authored composer events — we regenerate them from the messages.
+  const base = events
+    .filter(e => e.kind !== 'composer' && e.kind !== 'composer-clear')
+    .slice()
+    .sort((a, b) => a.t - b.t);
+
+  const MAX_DUR = 1.8, MIN_DUR = 0.35, GAP = 0.12;
+  const out = [];
+  for (const ev of base) {
+    if (ev.kind === 'pop') {
+      const m = msgById[ev.id];
+      if (m && m.type === 'text' && isSentMsg(m, thread)) {
+        const prevT = out.length ? out[out.length - 1].t : 0;
+        const text = String(m.text || '').replace(/\[\[link:([^\]]+)\]\]/g, '$1');
+        let start = Math.max(prevT + GAP, ev.t - MAX_DUR);
+        if (ev.t - start < MIN_DUR) start = Math.max(0, ev.t - MIN_DUR);
+        const dur = Math.max(0.2, ev.t - start);
+        out.push({ t: start, kind: 'composer', text, dur });
+        out.push(ev);                              // the bubble pop (keeps its sfx)
+        out.push({ t: ev.t, kind: 'composer-clear' });
+        continue;
+      }
+    }
+    out.push(ev);
+  }
+  return out.sort((a, b) => a.t - b.t);
+}
+
+function makeDriverScript(timeline) {
   // Embedded as a string so we can inject directly into the page.
   return `
   <script>
   (() => {
-    const TIMELINE = ${JSON.stringify(TIMELINE)};
+    const TIMELINE = ${JSON.stringify(timeline)};
+    const SEND_SVG = ${JSON.stringify(ICONS.sendArrow)};
+    const MIC_SVG = ${JSON.stringify(ICONS.mic)};
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     function findRow(id) { return document.querySelector('[data-anim-id="' + id + '"]'); }
 
@@ -174,9 +217,11 @@ function makeDriverScript() {
 
     function smoothScroll(durMs) {
       const conv = document.querySelector('.conversation');
-      if (!conv) return;
-      // Use the body/window scroll since stage is the scroll container in our layout.
-      const scroller = document.scrollingElement || document.documentElement;
+      // Framed mode scrolls the conversation itself (the phone screen is a fixed
+      // height, so the document never scrolls); the deprecated full-bleed mode
+      // scrolls the document. Pick whichever element actually overflows.
+      const scroller = (conv && conv.scrollHeight > conv.clientHeight + 2)
+        ? conv : (document.scrollingElement || document.documentElement);
       const target = scroller.scrollHeight - scroller.clientHeight;
       const start = scroller.scrollTop;
       if (target <= start + 2) return;
@@ -190,11 +235,26 @@ function makeDriverScript() {
       requestAnimationFrame(tick);
     }
 
-    async function typeComposer(text, durSec) {
-      const span = document.querySelector('[data-composer-text]');
+    // The keyboard renders a placeholder-only input when empty (no
+    // data-composer-text span), so build the text field on demand before typing.
+    function ensureComposer() {
       const input = document.querySelector('.keyboard .input');
-      if (!span || !input) return;
+      if (!input) return null;
+      let span = input.querySelector('[data-composer-text]');
+      if (!span) {
+        input.innerHTML =
+          '<span class="composer-text" data-composer-text></span>' +
+          '<span class="caret"></span>' +
+          '<span class="send-btn">' + SEND_SVG + '</span>';
+        span = input.querySelector('[data-composer-text]');
+      }
       input.classList.add('has-text');
+      return span;
+    }
+
+    async function typeComposer(text, durSec) {
+      const span = ensureComposer();
+      if (!span) return;
       span.textContent = '';
       const perChar = (durSec * 1000) / Math.max(1, text.length);
       for (const ch of text) {
@@ -204,10 +264,12 @@ function makeDriverScript() {
     }
 
     function clearComposer() {
-      const span = document.querySelector('[data-composer-text]');
       const input = document.querySelector('.keyboard .input');
-      if (span) span.textContent = '';
-      if (input) input.classList.remove('has-text');
+      if (!input) return;
+      input.classList.remove('has-text');
+      // Restore the resting placeholder + mic (mirrors the keyboard's empty state).
+      input.innerHTML = '<span class="placeholder">iMessage</span>' +
+                        '<span class="mic">' + MIC_SVG + '</span>';
     }
 
     async function run() {
@@ -240,9 +302,9 @@ function makeDriverScript() {
 // Compute SFX cue list from the TIMELINE (deterministic — no race).
 // =============================================================================
 
-function buildCueList() {
+function buildCueList(timeline) {
   const cues = [];
-  for (const ev of TIMELINE) {
+  for (const ev of timeline) {
     if (ev.sfx) cues.push({ t: ev.t, name: ev.sfx, soft: !!ev.soft });
   }
   return cues;
@@ -255,8 +317,10 @@ function buildCueList() {
 async function main() {
   const tmpDir = fs.mkdtempSync(path.join(require('os').tmpdir(), 'imessage-master-'));
   const thread = buildFullThread();
+  // Expand the timeline so every sent message types in the composer (full text).
+  const timeline = autoComposeTimeline(TIMELINE, thread);
   const html = renderHTML(thread, { mode: FRAMED ? 'with-iphone-frame' : 'with-keyboard' });
-  const driverHtml = html.replace('</body>', makeDriverScript() + '\n</body>');
+  const driverHtml = html.replace('</body>', makeDriverScript(timeline) + '\n</body>');
 
   // Pin the keyboard so it doesn't scroll out of view as the conversation grows.
   // Do this with an extra <style> tag rather than touching the shared CSS.
@@ -304,7 +368,10 @@ async function main() {
       body.framed .conv-header .center { transform: translate(-50%, -50%); }
       body.framed .conv-header .center .avatar { width: 42px; height: 42px; font-size: 17px; }
       body.framed .conv-header .center .name-pill { font-size: 13px; }
-      body.framed .conversation { flex: 1; overflow: hidden; }
+      /* Bounded scroll container so smoothScroll keeps the latest bubble in
+         view as the conversation grows (scrollbar hidden = reads as a phone). */
+      body.framed .conversation { flex: 1; min-height: 0; overflow-y: auto; }
+      body.framed .conversation::-webkit-scrollbar { width: 0; height: 0; display: none; }
     </style>`;
   // NOTE: `styleOverride` above is the DEPRECATED full-bleed layout (--full-bleed only).
   const finalHtml = driverHtml.replace('</head>', (FRAMED ? framedStyle : styleOverride) + '\n</head>');
@@ -334,10 +401,10 @@ async function main() {
     `-vf "scale=${OUT_W}:${OUT_H}" -c:v libx264 -pix_fmt yuv420p -movflags +faststart "${outMp4}"`,
     { stdio: 'pipe' }
   );
-  fs.writeFileSync(outMp4.replace(/\.mp4$/, '.sfx.json'), JSON.stringify(buildCueList(), null, 2));
+  fs.writeFileSync(outMp4.replace(/\.mp4$/, '.sfx.json'), JSON.stringify(buildCueList(timeline), null, 2));
   fs.rmSync(tmpDir, { recursive: true, force: true });
   console.log(`mp4  → ${path.relative(process.cwd(), outMp4)}`);
-  console.log(`sfx  → ${buildCueList().length} cues`);
+  console.log(`sfx  → ${buildCueList(timeline).length} cues`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });

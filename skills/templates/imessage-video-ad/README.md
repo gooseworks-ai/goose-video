@@ -21,7 +21,7 @@ The skill walks the pipeline with review gates:
 3. **Define the timeline** — `timeline.json` schedules every pop / typing / composer / scroll event and the SFX cues.
 4. **Flat-lay background** — generate the desk the phone sits on (`gen_flat_lay_bg.py`, FAL ~$0.19) or supply your own.
 5. **Record** — one continuous Playwright session → `master-chat.mp4` + a deterministic SFX cue list.
-6. **End card** — inject your real brand SVG into one of two templates → static brand slate.
+6. **End card** — generated with the [`goose-graphics`](https://skills.gooseworks.ai/styles) skill by default (`--style pixel-haze --format tweet`; bundled HTML templates as fallback) → static brand slate.
 7. **Stitch** — crossfade chat → end card, layer the SFX deterministically, mix the music bed.
 8. **Export** — 9:16 1080-wide + 1×1 variants for Meta.
 
