@@ -2,10 +2,12 @@
 
 The end card is the 3.5s payoff at the end of every iMessage ad. Get it wrong and the entire conversational setup feels like it was for nothing. Three hard rules and a small set of taste calls.
 
+**Default tool: the [`goose-graphics`](https://skills.gooseworks.ai/styles) skill — default style `pixel-haze`, format `tweet`.** Generate the slate, then run `scripts/endcard-to-mp4.sh <png> <project>` (it centers a square `tweet` card on the 9:16 frame, or fits a `story` card exactly). Swap `--style` for any catalog slug whose mood fits the brand. The bundled HTML templates below are the fallback when goose-graphics isn't available. Either way, the rules below hold.
+
 ## Hard rules
 
-1. **Use the real brand wordmark, never styled text.** CSS approximations look amateur even when typeface and kerning are close. Drop the official SVG (Wikimedia Commons, brandfetch.com/<brand>.com, or the brand's press kit) at `<project>/assets/brand-logo.svg` and pass it via `--logo`. `render-end-card.js` strips the XML prolog and injects via the `<!--{{BRAND_LOGO_SVG}}-->` placeholder. Your only job is to color the paths (`.logo svg path { fill: #fff }` or `#000`).
-2. **Static. No Ken-Burns.** The brand slate must land hard. A drifting end card reads as filler and undercuts the punch of the CTA reveal. The bundled template's ffmpeg invocation is `-vf "scale=720:1280,format=yuv420p"` — no zoompan.
+1. **Use the real brand wordmark, never styled text.** CSS approximations look amateur even when typeface and kerning are close. Get the official SVG (Wikimedia Commons, brandfetch.com/<brand>.com, or the brand's press kit) into `<project>/assets/brand-logo.svg` — pass it to goose-graphics via `--ref`, or to the fallback template via `--logo` (which strips the XML prolog and injects via the `<!--{{BRAND_LOGO_SVG}}-->` placeholder; color the paths `fill: #fff` or `#000`).
+2. **Static. No Ken-Burns.** The brand slate must land hard. A drifting end card reads as filler and undercuts the punch of the CTA reveal. Both `endcard-to-mp4.sh` and the fallback template use a fixed frame — no zoompan.
 3. **≤3 lines of text.** Logo + 1-line offer + code. Anything more reads as a media-buy template and not an iMessage payoff. If you have legal copy, shrink it well below the CTA and treat it as fine print.
 
 ## End-card variants — which to pick
