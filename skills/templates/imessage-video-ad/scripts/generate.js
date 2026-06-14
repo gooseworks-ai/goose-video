@@ -231,6 +231,38 @@ function renderAttachment(msg, participant, opts) {
   `;
 }
 
+// Rich link preview — the real iMessage shared-URL card: one bubble, image on
+// top, then a caption band with a bold title, the grey domain, and a chevron.
+// Schema: { type:"link", from, src (preview image), title, url | domain }.
+function renderLink(msg, participant, opts) {
+  const isSent = participant && participant.self;
+  const sideClass = isSent ? 'sent' : 'received';
+  const animClass = msg.popState === 'pending' ? 'pop-pending'
+                  : msg.popState === 'now' ? 'pop-now' : '';
+  const dataAnim = msg.id ? ` data-anim-id="${escapeHTML(msg.id)}"` : '';
+  const pendingAttr = msg.popState === 'pending' ? ' data-pending="1"' : '';
+  const src = msg.src || '';
+  const title = msg.title || '';
+  let domain = msg.domain || '';
+  if (!domain && msg.url) {
+    domain = String(msg.url).replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0];
+  }
+  return `
+    <div class="row link ${sideClass} ${animClass}"${dataAnim}${pendingAttr}>
+      <div class="link-preview">
+        ${src ? `<div class="link-image"><img src="${escapeHTML(src)}" alt=""></div>` : ''}
+        <div class="link-caption">
+          <div class="link-text">
+            ${title ? `<div class="link-title">${escapeHTML(title)}</div>` : ''}
+            ${domain ? `<div class="link-domain">${escapeHTML(domain)}</div>` : ''}
+          </div>
+          <div class="link-chevron">${ICONS.chevron}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function renderTypingBubble(msg, participant, opts) {
   const { mode, showAvatar } = opts;
   msg = msg || {};
@@ -285,6 +317,9 @@ function renderConversation(thread, participantMap, mode) {
     } else if (m.type === 'attachment') {
       const participant = participantMap.get(m.from);
       out.push(renderAttachment(m, participant, { mode }));
+    } else if (m.type === 'link') {
+      const participant = participantMap.get(m.from);
+      out.push(renderLink(m, participant, { mode }));
     }
   }
   return `<div class="conversation">${out.join('\n')}</div>`;

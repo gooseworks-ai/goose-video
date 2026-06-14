@@ -53,7 +53,7 @@ These are mistakes that have already been made and fixed in production builds. D
 
 ### 0. Use the real brand wordmark on the end card, never styled text
 
-CSS approximations of brand wordmarks look amateur even when typeface and kerning are close. Drop the official SVG at `<project>/assets/brand-logo.svg` (sources: Wikimedia Commons, `brandfetch.com/<brand>.com`, brand press kit) and pass it via `--logo`. `scripts/render-end-card.js` injects it into the `<!--{{BRAND_LOGO_SVG}}-->` placeholder. Your only job is to color the paths. See `references/end-card-recipe.md`.
+CSS approximations of brand wordmarks look amateur even when typeface and kerning are close. Get the official SVG (Wikimedia Commons, `brandfetch.com/<brand>.com`, brand press kit) into `<project>/assets/brand-logo.svg`. The end card is generated with the **goose-graphics** skill by default (pass the logo via `--ref`); the bundled fallback template injects it via `--logo`. See the "End card — use Goose graphics by default" section and `references/end-card-recipe.md`.
 
 ### 1. Use the real Apple iMessage SFX, not generic notification sounds
 
@@ -115,9 +115,26 @@ Most iMessage ads fit one of these six angles. Strongest hooks: a specific numbe
 
 Pick the strongest angle for the brand voice *before* writing copy. Most "the script is fine but feels off" feedback comes from picking the wrong angle. Catching that here is 30 seconds; catching it after recording is 30 minutes.
 
-## End-card variants — which to pick
+## End card — use Goose graphics by default
 
-Pick by brand voice, not aesthetic preference. See `references/end-card-recipe.md`.
+**The end card is generated with the [`goose-graphics`](https://skills.gooseworks.ai/styles) skill by default.** It renders a far more polished, on-brand slate than a hand-coded template, and the published style catalog keeps the look current.
+
+**Default: `--style pixel-haze --format tweet`** — a warm-gray card with a pixel-mosaic gradient band and a clean wordmark, which reads well for consumer/app brands. (The `tweet` canvas is square 1080×1080; `endcard-to-mp4.sh` centers it on the 9:16 frame, auto-padding with the card's own background colour so the seam is invisible.)
+
+```bash
+# 1. Generate the end card in the default style (or swap --style for any catalog
+#    slug — browse https://skills.gooseworks.ai/styles / `npx gooseworks styles list`).
+/goose-graphics --style pixel-haze --format tweet \
+  --brief "End card for <brand>. Big wordmark, one offer line, the promo code <CODE>. ≤3 lines, static, no busy background." \
+  --ref <project>/assets/brand-logo.svg
+# 2. Convert the exported PNG to the static end-card MP4 the stitch expects
+#    (works for the square tweet and for any 9:16 story-format card too).
+bash scripts/endcard-to-mp4.sh <path-to-goose-graphics.png> ./my-ad
+```
+
+Swap `--style` for any catalog slug whose mood fits the brand (`Dark & Moody`, `Bold & Energetic`, `Organic & Warm`, …). The end-card craft rules still apply — see `references/end-card-recipe.md` (real wordmark, ≤3 lines, **static, no Ken-Burns**).
+
+**Fallback — bundled HTML templates** (use only when goose-graphics is unavailable): `scripts/render-end-card.js` renders one of two local templates and injects your real logo SVG.
 
 | `--variant` | Template | When to pick |
 |---|---|---|
@@ -161,9 +178,13 @@ Drop a brand-specific prompt at `<project>/flat-lay-prompt.txt` to override the 
 # 1) Record the chat as ONE continuous video → clips/master-chat.mp4 + .sfx.json
 node scripts/record-master.js --project ./my-ad
 
-# 2) Render the end card (static) → clips/scene-09-endcard.mp4
-node scripts/render-end-card.js --project ./my-ad --logo ./my-ad/assets/brand-logo.svg
-#    photo-bg variant: add  --variant photo-bg --hero ./my-ad/assets/hero.png
+# 2) End card (static) → clips/scene-09-endcard.mp4
+#    DEFAULT: render it with the goose-graphics skill, then convert the PNG:
+#      /goose-graphics --style pixel-haze --format tweet --brief "..." --ref ./my-ad/assets/brand-logo.svg
+#      bash scripts/endcard-to-mp4.sh <goose-graphics.png> ./my-ad
+#    FALLBACK (goose-graphics unavailable): the bundled HTML template:
+#      node scripts/render-end-card.js --project ./my-ad --logo ./my-ad/assets/brand-logo.svg
+#      (photo-bg variant: add  --variant photo-bg --hero ./my-ad/assets/hero.png)
 
 # 3) Stitch chat + end card with crossfade + music + SFX → edits/master-final.mp4
 bash scripts/stitch.sh ./my-ad
@@ -202,7 +223,7 @@ Before declaring the ad shippable:
 | Glitchy / micro-flicker between bubbles | Recorded scene-by-scene with reloads | Use the continuous `record-master.js` (one session, one timeline) |
 | SFX too quiet, audio weak | `amix` divided by N inputs | `:normalize=0` on amix + `volume=2.5,alimiter=limit=0.95` (already in `stitch.sh`) |
 | Bubbles pre-allocate space, conversation doesn't grow | Pending hid via `opacity:0` not `display:none` | Use `data-pending="1"` → `display:none` (already in `chat.css`) |
-| End card drifts / feels like filler | Ken-Burns zoompan | Use the static `scale=720:1280` invocation in `render-end-card.js` |
+| End card drifts / feels like filler | Ken-Burns zoompan | Keep the end card a static still — `endcard-to-mp4.sh` / `render-end-card.js` use a fixed frame, no zoompan |
 | Typing dots flash for 1 frame and skip | typing-pop → typing-swap gap too short | Hold ~700–1000ms between them |
 | CTA code not underlined | Missing `[[link:CODE]]` marker | Wrap the code/email/URL in the marker in `full-thread.json` |
 | Receiver avatar clipped at viewport top | conv-header stack overflows when `position: fixed` | The full-bleed `styleOverride` pads the header to `min-height: 110px` and anchors `.center` from `top: 14px`. Don't shrink without re-testing. |

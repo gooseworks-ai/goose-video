@@ -11,10 +11,10 @@
     { "id": "tyler", "name": "Tyler", "color": "#6E6E73", "initials": "TK" }
   ],
   "messages": [
-    { "id": "m01-attach", "type": "attachment", "from": "me",
+    { "id": "m01-link", "type": "link", "from": "me",
       "src": "../assets/hook.png",
-      "title": "Holo Dragon #149 — PSA 10",
-      "subtitle": "$4,736.80" },
+      "title": "Holo Dragon #149 — PSA 10 · pulled on Decked",
+      "url": "decked.app" },
     { "id": "m02-yo",   "type": "text",   "from": "me",    "text": "yo just pulled this", "delivered": true },
     { "id": "m03-typ",  "type": "typing", "from": "tyler" },
     { "id": "m04-no",   "type": "text",   "from": "tyler", "text": "bro no way" },

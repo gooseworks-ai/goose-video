@@ -9,25 +9,23 @@ type TimelineEvent =
   | { t: number; kind: 'pop';           id: string;           sfx?: 'send' | 'receive' | null }
   | { t: number; kind: 'typing-pop';    id: string;           sfx: null /* always */ }
   | { t: number; kind: 'typing-swap';   id: string; toId: string; sfx?: 'send' | 'receive' }
-  | { t: number; kind: 'composer';      text: string; dur: number /* seconds */ }
-  | { t: number; kind: 'composer-clear' }
   | { t: number; kind: 'scroll';        dur: number /* milliseconds */ }
   | { t: number; kind: 'noop' }
 ```
 
 `t` is **absolute seconds from recording start**. The driver computes `target = t0 + ev.t * 1000` and `await sleep(target - performance.now())` — there's no relative offset.
 
-## Patterns
+## Composer typing is automatic — don't author it
 
-### Sent message after composer typing
+You do **not** add `composer` events. `record-master.js` automatically types **every sent text message, in full**, into the text box before its `pop` (derived from the message text, finishing exactly at the pop's `t`, then clearing). So a sent bubble just needs its `pop` event:
+
 ```js
-{ t: 6.40, kind: 'composer', text: 'cat', dur: 0.30 },
-{ t: 6.85, kind: 'pop', id: 'm09-cb', sfx: 'send' },
-{ t: 6.85, kind: 'composer-clear' },
-{ t: 6.95, kind: 'scroll', dur: 250 },
+{ t: 6.85, kind: 'pop', id: 'm09-cb', sfx: 'send' },   // composer types "decked" in full before this fires
 ```
 
-`composer` and `composer-clear` are paired — the clear happens at the same `t` as the bubble pop so the composer empties exactly when the bubble flies out.
+This is why the example timeline has no `composer`/`composer-clear` entries. (Legacy `composer` events are ignored if present.)
+
+## Patterns
 
 ### Peer reply with typing indicator
 ```js

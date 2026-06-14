@@ -1,54 +1,173 @@
 {
-  "_comment": "The single source of truth for both the recording schedule and the SFX cue list. `t` is ABSOLUTE seconds from recording start. Copy to <project>/timeline.json and adapt to your thread. See references/timeline-schema.md. The end card (3.5s) is appended downstream by stitch.sh — total_duration covers only the chat portion.",
+  "_comment": "The single source of truth for both the recording schedule and the SFX cue list. `t` is ABSOLUTE seconds from recording start. Copy to <project>/timeline.json and adapt to your thread. See references/timeline-schema.md. The end card (3.5s) is appended downstream by stitch.sh \u2014 total_duration covers only the chat portion.",
   "total_duration": 17.4,
   "events": [
-    { "t": 0.40,  "kind": "pop",           "id": "m01-attach", "sfx": null },
-    { "t": 1.10,  "kind": "pop",           "id": "m02-yo",     "sfx": "send" },
-    { "t": 1.20,  "kind": "scroll",        "dur": 350 },
-
-    { "t": 1.95,  "kind": "typing-pop",    "id": "m03-typ",    "sfx": null },
-    { "t": 2.05,  "kind": "scroll",        "dur": 280 },
-    { "t": 2.85,  "kind": "typing-swap",   "id": "m03-typ", "toId": "m04-no",   "sfx": "receive" },
-    { "t": 2.95,  "kind": "scroll",        "dur": 250 },
-    { "t": 3.30,  "kind": "pop",           "id": "m05-app",    "sfx": "receive" },
-    { "t": 3.40,  "kind": "scroll",        "dur": 220 },
-
-    { "t": 4.05,  "kind": "pop",           "id": "m06-yeah",   "sfx": "send" },
-    { "t": 4.15,  "kind": "scroll",        "dur": 250 },
-
-    { "t": 4.85,  "kind": "typing-pop",    "id": "m07-typ",    "sfx": null },
-    { "t": 4.95,  "kind": "scroll",        "dur": 250 },
-    { "t": 5.70,  "kind": "typing-swap",   "id": "m07-typ", "toId": "m08-what", "sfx": "receive" },
-    { "t": 5.80,  "kind": "scroll",        "dur": 250 },
-
-    { "t": 6.40,  "kind": "composer",      "text": "cat", "dur": 0.30 },
-    { "t": 6.85,  "kind": "pop",           "id": "m09-cb",     "sfx": "send" },
-    { "t": 6.85,  "kind": "composer-clear" },
-    { "t": 6.95,  "kind": "scroll",        "dur": 250 },
-
-    { "t": 7.55,  "kind": "composer",      "text": "you can build your own", "dur": 1.50 },
-    { "t": 9.20,  "kind": "pop",           "id": "m10-build",  "sfx": "send" },
-    { "t": 9.20,  "kind": "composer-clear" },
-    { "t": 9.30,  "kind": "scroll",        "dur": 300 },
-
-    { "t": 10.05, "kind": "composer",      "text": "then u can", "dur": 0.60 },
-    { "t": 10.85, "kind": "pop",           "id": "m11-ship",   "sfx": "send" },
-    { "t": 10.85, "kind": "composer-clear" },
-    { "t": 10.95, "kind": "scroll",        "dur": 300 },
-
-    { "t": 11.65, "kind": "typing-pop",    "id": "m12-typ",    "sfx": null },
-    { "t": 11.75, "kind": "scroll",        "dur": 250 },
-    { "t": 12.65, "kind": "typing-swap",   "id": "m12-typ", "toId": "m13-ins",  "sfx": "receive" },
-    { "t": 12.75, "kind": "scroll",        "dur": 250 },
-
-    { "t": 13.55, "kind": "composer",      "text": "ya use code FREEPA", "dur": 1.40 },
-    { "t": 15.10, "kind": "pop",           "id": "m14-code",   "sfx": "send" },
-    { "t": 15.10, "kind": "composer-clear" },
-    { "t": 15.20, "kind": "scroll",        "dur": 350 },
-
-    { "t": 15.95, "kind": "pop",           "id": "m15-bet",    "sfx": "receive" },
-    { "t": 16.05, "kind": "scroll",        "dur": 250 },
-
-    { "t": 17.00, "kind": "noop" }
+    {
+      "t": 0.4,
+      "kind": "pop",
+      "id": "m01-link",
+      "sfx": null
+    },
+    {
+      "t": 1.1,
+      "kind": "pop",
+      "id": "m02-yo",
+      "sfx": "send"
+    },
+    {
+      "t": 1.2,
+      "kind": "scroll",
+      "dur": 350
+    },
+    {
+      "t": 1.95,
+      "kind": "typing-pop",
+      "id": "m03-typ",
+      "sfx": null
+    },
+    {
+      "t": 2.05,
+      "kind": "scroll",
+      "dur": 280
+    },
+    {
+      "t": 2.85,
+      "kind": "typing-swap",
+      "id": "m03-typ",
+      "toId": "m04-no",
+      "sfx": "receive"
+    },
+    {
+      "t": 2.95,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 3.3,
+      "kind": "pop",
+      "id": "m05-app",
+      "sfx": "receive"
+    },
+    {
+      "t": 3.4,
+      "kind": "scroll",
+      "dur": 220
+    },
+    {
+      "t": 4.05,
+      "kind": "pop",
+      "id": "m06-yeah",
+      "sfx": "send"
+    },
+    {
+      "t": 4.15,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 4.85,
+      "kind": "typing-pop",
+      "id": "m07-typ",
+      "sfx": null
+    },
+    {
+      "t": 4.95,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 5.7,
+      "kind": "typing-swap",
+      "id": "m07-typ",
+      "toId": "m08-what",
+      "sfx": "receive"
+    },
+    {
+      "t": 5.8,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 6.85,
+      "kind": "pop",
+      "id": "m09-cb",
+      "sfx": "send"
+    },
+    {
+      "t": 6.95,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 9.2,
+      "kind": "pop",
+      "id": "m10-build",
+      "sfx": "send"
+    },
+    {
+      "t": 9.3,
+      "kind": "scroll",
+      "dur": 300
+    },
+    {
+      "t": 10.85,
+      "kind": "pop",
+      "id": "m11-ship",
+      "sfx": "send"
+    },
+    {
+      "t": 10.95,
+      "kind": "scroll",
+      "dur": 300
+    },
+    {
+      "t": 11.65,
+      "kind": "typing-pop",
+      "id": "m12-typ",
+      "sfx": null
+    },
+    {
+      "t": 11.75,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 12.65,
+      "kind": "typing-swap",
+      "id": "m12-typ",
+      "toId": "m13-ins",
+      "sfx": "receive"
+    },
+    {
+      "t": 12.75,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 15.1,
+      "kind": "pop",
+      "id": "m14-code",
+      "sfx": "send"
+    },
+    {
+      "t": 15.2,
+      "kind": "scroll",
+      "dur": 350
+    },
+    {
+      "t": 15.95,
+      "kind": "pop",
+      "id": "m15-bet",
+      "sfx": "receive"
+    },
+    {
+      "t": 16.05,
+      "kind": "scroll",
+      "dur": 250
+    },
+    {
+      "t": 17.0,
+      "kind": "noop"
+    }
   ]
 }
